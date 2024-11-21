@@ -1,6 +1,6 @@
 # ObesiCheck - Obesity Checker
 
-## Bangkit-Capstone-C242-PR593
+## Bangkit Capstone C242-PR593
 
 Bangkit Capstone Team ID: C242-PR593 <br>
 Here is our team Capstone Product Based repository for Bangkit 2024 Batch 2 Capstone project. Our team consist of 2 Machine Learning Cohort, 4 Cloud Computing Cohort, and 1 Mobile Development.
@@ -18,3 +18,24 @@ Here is our team Capstone Product Based repository for Bangkit 2024 Batch 2 Caps
 | Muh. Furqan Aprilian Putra Muslihat | A272B4KY2611 | Mobile Development | Universitas Muslim Indonesia |
 
 ## About this project
+
+This project is about developing an application to predict a person obesity level and provide appropriate exercise and diet recommendations based on obesity level. The application provides exercise and food recommendations that must be done every day according to the level of obesity. Our goal for this app is to raise awareness of obesity-related health risks and promote preventive actions. By providing users with insights into their health, we aim to encourage proactive steps toward reducing obesity and improving quality of life. This project aspires to be a practical solution that positively impacts public health and contributes to a healthier society by making obesity management accessible and actionable.
+
+## Repositories
+
+|    Branch Name     |                                      Branch Link                                         |
+| :----------------: | :--------------------------------------------------------------------------------------: |
+| Mobile Development | [MD Branch](https://github.com/adrielgian99/Bangkit-Capstone-C242-PR593/tree/mobile_development) |
+|  Cloud Computing   | [CC Branch](https://github.com/adrielgian99/Bangkit-Capstone-C242-PR593/tree/cloud_computing) |
+|  Machine Learning  | [ML Branch](https://github.com/adrielgian99/Bangkit-Capstone-C242-PR593/tree/machine_learning) |
+
+## Datasets
+
+Dataset Links of This Project :
+
+- [Dataset 1]()
+- [Dataset 2]()
+
+## UI/UX Design
+
+- Link Lo-Fi Design : [Lo-Fi](https://www.figma.com/design/EHfGrCUAKuQcPEc6Z3H0D4/02.-User-Flows-Resource-(Copy)?node-id=59177-153&t=5oTO0v16bc9JCHZi-1)
