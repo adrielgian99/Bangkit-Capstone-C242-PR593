@@ -1,2 +1,2 @@
-# Obesicheck - Obesity Chekers - Cloud Computing
+# Obesicheck - Obesity Chekers - Mobile Development
 ## Bangkit Capstone Project 2024
