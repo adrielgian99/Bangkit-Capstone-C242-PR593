@@ -9,13 +9,13 @@ Here is our team Capstone Product Based repository for Bangkit 2024 Batch 2 Caps
 
 |                   Name                   | Bangkit-ID |         Learning Path         |                   University                 |
 | :--------------------------------------: | :--------: | :---------------------------: | :------------------------------------------: |
-| Aurellia Antonie | M004B4KX0736 | Machine Learning | Institut Teknologi Sepuluh Nopember                 |
+| Aurellia Antonie | M004B4KX0736 | Machine Learning |               Institut Teknologi Sepuluh Nopember                 |
 | Nurhadi Meilana | M277B4KY3432 | Machine Learning | Universitas Negeri Jakarta |
 | Adriel Gian Rama Hartana | C382B4KY0138 | Cloud Computing | Universitas Merdeka Malang |
 | Agustinus Adven Christo | C200B4KY0187 | Cloud Computing | Universitas Diponegoro |
 | M. Aditya Ramadhan | C134B4KY2331 | Cloud Computing | Politeknik Negeri Sriwijaya |
 | William Wijaya | C243B4KY4488 | Cloud Computing | Universitas Kristen Maranatha |
-| Muh. Furqan Aprilian Putra Muslihat            | A272B4KY2611 | Mobile Development      | Universitas Muslim Indonesia     |
+|           Muh. Furqan Aprilian Putra Muslihat            | A272B4KY2611 |           Mobile Development      | Universitas Muslim Indonesia     |
 
 ## About this project
 
@@ -33,7 +33,7 @@ This project is about developing an application to predict a person obesity leve
 
 Dataset Links of This Project :
 
-- [Dataset 1]()
+- [Dataset 1](https://github.com/adrielgian99/Bangkit-Capstone-C242-PR593/blob/machine_learning/Dataset/ObesityDataSet.csv)
 - [Dataset 2]()
 
 ## UI/UX Design
