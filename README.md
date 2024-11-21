@@ -17,7 +17,7 @@ Cloud Computing have responsible for creating and managing APIs, databases and s
 
 
 ## CLOUD ARCHITECTURE
-![ObengCloudArchitecture]()
+![ObengCloudArchitecture](assets/Obesicheck cloud architecture.drawio.png)
 
 ## Entity Relationship Diagram (ERD)
 ![Entity Relationship Diagram (ERD)]()
