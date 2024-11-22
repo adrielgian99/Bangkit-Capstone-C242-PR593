@@ -20,7 +20,7 @@ Cloud Computing have responsible for creating and managing APIs, databases and s
 ![OsicheckCloudArchitecture](https://github.com/adrielgian99/Bangkit-Capstone-C242-PR593/blob/c9cbc03eb5c9cb0d114c8a04b82ac7a32775b3a0/assets/Obesicheck%20cloud%20architecture.drawio.png)
 
 ## Entity Relationship Diagram (ERD)
-![Entity Relationship Diagram (ERD)]()
+![Entity Relationship Diagram (ERD)](https://github.com/adrielgian99/Bangkit-Capstone-C242-PR593/blob/9811bb7d625ca01569f3786c70ad43cf7fd95a5d/assets/Obesicheck%20ERD-Page-1.drawio.png)
 <br>
 <br>
 We create an ERD design before starting to develop our application cloud structure. This really helps us in managing files and data such as information about authentication, customer and technician profiles, and also payment and transaction data between customer, admin and technicians that will be stored in the database.
