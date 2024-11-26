@@ -1,107 +1,31 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "ObesiCheck API",
-    "description": "API Documentation for ObesiCheck.",
+    "title": "ObesiCheck API Documentation",
+    "description": "API documentation for the ObesiCheck application.",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "http://localhost:3000/api/",
-      "description": "Server Development"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Authentication",
-      "description": "Endpoints for authentication and session management"
-    },
-    {
-      "name": "User Management",
-      "description": "Endpoints for managing user data"
+      "url": "http://localhost:8000",
+      "description": "Development server"
     }
   ],
   "paths": {
-    "/auth/login": {
-      "post": {
-        "tags": ["Authentication"],
-        "summary": "Login a user",
-        "description": "Authenticate a user and return a token.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "example": "user@example.com"
-                  },
-                  "password": {
-                    "type": "string",
-                    "example": "password123"
-                  }
-                },
-                "required": ["email", "password"]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful login",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "token": {
-                      "type": "string",
-                      "example": "eyJhbGciOiJIUzI1NiIsInR5..."
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Invalid credentials"
-          }
-        }
-      }
-    },
-    "/users": {
+    "/userdetails": {
       "get": {
-        "tags": ["User Management"],
-        "summary": "Retrieve all users",
-        "description": "Returns a list of all users.",
+        "summary": "Retrieve all user details",
         "responses": {
           "200": {
-            "description": "A JSON array of users",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": { "type": "integer", "example": 1 },
-                      "name": { "type": "string", "example": "John Doe" },
-                      "email": { "type": "string", "example": "john@example.com" },
-                      "bmi": { "type": "number", "example": 25.4 }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "List of user details"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       },
       "post": {
-        "tags": ["User Management"],
-        "summary": "Create a new user",
-        "description": "Add a new user to the database.",
+        "summary": "Create or update user health details",
         "requestBody": {
           "required": true,
           "content": {
@@ -109,88 +33,195 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
-                    "type": "string",
-                    "example": "Jane Doe"
-                  },
-                  "email": {
-                    "type": "string",
-                    "example": "jane@example.com"
-                  },
-                  "password": {
-                    "type": "string",
-                    "example": "password123"
-                  },
-                  "bmi": {
-                    "type": "number",
-                    "example": 27.3
-                  }
-                },
-                "required": ["name", "email", "password"]
+                  "id_user": { "type": "integer" },
+                  "gender": { "type": "string" },
+                  "age": { "type": "integer" },
+                  "weight": { "type": "number" },
+                  "height": { "type": "number" },
+                  "bmi": { "type": "number" },
+                  "daily_water_intake": { "type": "number" },
+                  "physical_activity": { "type": "string" },
+                  "calorie_monitoring": { "type": "boolean" },
+                  "smoking_status": { "type": "boolean" },
+                  "alcohol_consumption": { "type": "boolean" },
+                  "obesity_level": { "type": "string" }
+                }
               }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": "User successfully created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": { "type": "integer", "example": 2 },
-                    "name": { "type": "string", "example": "Jane Doe" },
-                    "email": { "type": "string", "example": "jane@example.com" },
-                    "bmi": { "type": "number", "example": 27.3 }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input data"
-          }
+          "201": { "description": "User details created/updated successfully" },
+          "400": { "description": "Invalid input" }
         }
       }
     },
-    "/users/{id}": {
+    "/userdetails/{id}": {
       "get": {
-        "tags": ["User Management"],
-        "summary": "Retrieve a user by ID",
-        "description": "Fetch a single user based on their ID.",
+        "summary": "Retrieve a user's details by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "example": 1
-            },
-            "description": "ID of the user to retrieve"
+            "schema": { "type": "integer" }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Details of the user",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": { "type": "integer", "example": 1 },
-                    "name": { "type": "string", "example": "John Doe" },
-                    "email": { "type": "string", "example": "john@example.com" },
-                    "bmi": { "type": "number", "example": 25.4 }
-                  }
+          "200": { "description": "Specific user details" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/feedbacks": {
+      "get": {
+        "summary": "Retrieve all feedback entries",
+        "responses": {
+          "200": { "description": "List of all feedback" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "post": {
+        "summary": "Submit new feedback",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_user": { "type": "integer" },
+                  "rating": { "type": "number" },
+                  "description": { "type": "string" },
+                  "created_at": { "type": "string", "format": "date-time" }
                 }
               }
             }
-          },
-          "404": {
-            "description": "User not found"
           }
+        },
+        "responses": {
+          "201": { "description": "Feedback created successfully" },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/feedbacks/{id}": {
+      "get": {
+        "summary": "Retrieve feedback by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Specific feedback details" },
+          "404": { "description": "Feedback not found" }
+        }
+      }
+    },
+    "/diets": {
+      "get": {
+        "summary": "Retrieve all diet plans",
+        "responses": {
+          "200": { "description": "List of diet plans" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "post": {
+        "summary": "Create or update a user's diet plan",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_user": { "type": "integer" },
+                  "vegetables": { "type": "array", "items": { "type": "string" } },
+                  "vegetables_image": { "type": "string" },
+                  "protein_intake": { "type": "number" },
+                  "protein_intake_image": { "type": "string" },
+                  "juice": { "type": "array", "items": { "type": "string" } },
+                  "juice_image": { "type": "string" },
+                  "scheduled_date": { "type": "string", "format": "date" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Diet plan created/updated successfully" },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/diets/{id_user}": {
+      "get": {
+        "summary": "Retrieve diet plan by User ID",
+        "parameters": [
+          {
+            "name": "id_user",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "User's diet plan" },
+          "404": { "description": "Diet plan not found" }
+        }
+      }
+    },
+    "/activities": {
+      "get": {
+        "summary": "Retrieve all activities",
+        "responses": {
+          "200": { "description": "List of all activities" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "post": {
+        "summary": "Create or update a user's activity",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_user": { "type": "integer" },
+                  "activity_name": { "type": "string" },
+                  "activity_description": { "type": "string" },
+                  "activity_image": { "type": "string" },
+                  "scheduled_date": { "type": "string", "format": "date" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Activity created/updated successfully" },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/activities/{id_user}": {
+      "get": {
+        "summary": "Retrieve activities by User ID",
+        "parameters": [
+          {
+            "name": "id_user",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "User's activities" },
+          "404": { "description": "Activities not found" }
         }
       }
     }
