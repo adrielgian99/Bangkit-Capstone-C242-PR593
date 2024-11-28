@@ -1,0 +1,20 @@
+{
+  "name": "bangkit-capstone-c242-pr593",
+  "version": "1.0.0",
+  "description": "Bangkit Capstone Team ID : C242 - PR593 <br> Here is our repository for the Bangkit 2023 Capstone project - Cloud Computing.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "start-dev": "nodemon src/app.js"
+  },
+  "keywords": [],
+  "author": "C242-PR593",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "nodemon": "^3.1.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

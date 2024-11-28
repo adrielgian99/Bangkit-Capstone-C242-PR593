@@ -1,31 +1,138 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "ObesiCheck API Documentation",
-    "description": "API documentation for the ObesiCheck application.",
+    "title": "ObesiCheck API",
+    "description": "API Specs of ObesiCheck",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "http://localhost:8000",
+      "url": "http://localhost:8000/api/",
       "description": "Development server"
     }
   ],
+  "tags": [
+    {
+      "name": "user_account",
+      "description": "User Account"
+    },
+    {
+      "name": "users",
+      "description": "Users"
+    },
+    {
+      "name": "user_survey1",
+      "description": "User Survey 1"
+    },
+    {
+      "name": "user_obesity_level",
+      "description": "Users Obesity Level"
+    },
+    {
+      "name": "user_survey2",
+      "description": "User Survey 2"
+    },
+    {
+      "name": "A_D_recomendations",
+      "description": "Activity Diets Recomendations"
+    },
+    {
+      "name": "activities_recomendation",
+      "description": "Activity Recomendations"
+    },
+    {
+      "name": "activites",
+      "description": "Activites"
+    },
+    {
+      "name": "diets_recomendation",
+      "description": "Diets Recomendations"
+    },
+    {
+      "name": "diets",
+      "description": "Diets"
+    },
+    {
+      "name": "feedback",
+      "description": "Feedback"
+    }
+  ],
+
   "paths": {
-    "/userdetails": {
+    "/user_account": {
       "get": {
-        "summary": "Retrieve all user details",
+        "summary": "Menampilkan seluruh data pengguna",
+        "description": "Mengambil semua data dari resource.",
+        "tags": ["user_account"],
         "responses": {
           "200": {
-            "description": "List of user details"
+            "description": "Koneksi OK",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id_user": 1,
+                    "created_at": "mm/dd/yy",
+                    "updated_at": "mm/dd/yy",
+                    "username": "Jhon",
+                    "password": 123,
+                    "user_profile_image": "url",
+                    "id_feedback": "1"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Permintaan tidak valid atau parameter tidak lengkap.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bad Request",
+                  "message": "Parameter yang diperlukan tidak ditemukan."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Pengguna tidak terautentikasi.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Anda perlu login untuk mengakses data ini."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pengguna tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Not Found",
+                  "message": "Pengguna dengan ID tersebut tidak ditemukan."
+                }
+              }
+            }
           },
           "500": {
-            "description": "Server error"
+            "description": "Terjadi kesalahan internal server.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal Server Error",
+                  "message": "Terjadi kesalahan saat memproses permintaan."
+                }
+              }
+            }
           }
         }
       },
       "post": {
-        "summary": "Create or update user health details",
+        "summary": "Create a new resource",
+        "description": "Menambahkan resource baru.",
+        "tags": ["user_account"],
         "requestBody": {
           "required": true,
           "content": {
@@ -33,105 +140,84 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id_user": { "type": "integer" },
-                  "gender": { "type": "string" },
-                  "age": { "type": "integer" },
-                  "weight": { "type": "number" },
-                  "height": { "type": "number" },
-                  "bmi": { "type": "number" },
-                  "daily_water_intake": { "type": "number" },
-                  "physical_activity": { "type": "string" },
-                  "calorie_monitoring": { "type": "boolean" },
-                  "smoking_status": { "type": "boolean" },
-                  "alcohol_consumption": { "type": "boolean" },
-                  "obesity_level": { "type": "string" }
-                }
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                "username": "Jhon",
+                "password": 123,
+                "user_profile_image": "url"
               }
             }
           }
         },
         "responses": {
-          "201": { "description": "User details created/updated successfully" },
-          "400": { "description": "Invalid input" }
+          "201": {
+            "description": "Resource created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "message": "New user created successfully"
+                }
+              }
+            }
+          }
         }
       }
     },
-    "/userdetails/{id}": {
+    "/user_account/{id}": {
       "get": {
-        "summary": "Retrieve a user's details by ID",
+        "summary": "Get a single resource",
+        "description": "Mengambil data resource berdasarkan ID.",
+        "tags": ["user_account"],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer" }
+            "description": "ID dari resource yang akan diambil",
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "Specific user details" },
-          "404": { "description": "User not found" }
-        }
-      }
-    },
-    "/feedbacks": {
-      "get": {
-        "summary": "Retrieve all feedback entries",
-        "responses": {
-          "200": { "description": "List of all feedback" },
-          "500": { "description": "Server error" }
-        }
-      },
-      "post": {
-        "summary": "Submit new feedback",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id_user": { "type": "integer" },
-                  "rating": { "type": "number" },
-                  "description": { "type": "string" },
-                  "created_at": { "type": "string", "format": "date-time" }
+          "200": {
+            "description": "Data resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "name": "Jhon",
+                  "user_profile_image": "url",
+                  "id_feedback": 1
                 }
               }
             }
+          },
+          "404": {
+            "description": "Resource not found"
           }
-        },
-        "responses": {
-          "201": { "description": "Feedback created successfully" },
-          "400": { "description": "Invalid input" }
         }
-      }
-    },
-    "/feedbacks/{id}": {
-      "get": {
-        "summary": "Retrieve feedback by ID",
+      },
+      "put": {
+        "summary": "Update a resource",
+        "description": "Memperbarui data resource berdasarkan ID.",
+        "tags": ["user_account"],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer" }
+            "description": "ID dari resource yang akan diperbarui",
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
-        "responses": {
-          "200": { "description": "Specific feedback details" },
-          "404": { "description": "Feedback not found" }
-        }
-      }
-    },
-    "/diets": {
-      "get": {
-        "summary": "Retrieve all diet plans",
-        "responses": {
-          "200": { "description": "List of diet plans" },
-          "500": { "description": "Server error" }
-        }
-      },
-      "post": {
-        "summary": "Create or update a user's diet plan",
         "requestBody": {
           "required": true,
           "content": {
@@ -139,52 +225,113 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id_user": { "type": "integer" },
-                  "vegetables": { "type": "array", "items": { "type": "string" } },
-                  "vegetables_image": { "type": "string" },
-                  "protein_intake": { "type": "number" },
-                  "protein_intake_image": { "type": "string" },
-                  "juice": { "type": "array", "items": { "type": "string" } },
-                  "juice_image": { "type": "string" },
-                  "scheduled_date": { "type": "string", "format": "date" }
-                }
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                "username": "Jhons",
+                "password": "12345",
+                "user_profile_image": "url"
               }
             }
           }
         },
         "responses": {
-          "201": { "description": "Diet plan created/updated successfully" },
-          "400": { "description": "Invalid input" }
+          "200": {
+            "description": "Resource updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "updated_at": "mm/dd/yy",
+                  "message": "Resource updated successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
         }
-      }
-    },
-    "/diets/{id_user}": {
-      "get": {
-        "summary": "Retrieve diet plan by User ID",
+      },
+      "delete": {
+        "summary": "Delete a resource",
+        "description": "Menghapus resource berdasarkan ID.",
+        "tags": ["user_account"],
         "parameters": [
           {
-            "name": "id_user",
+            "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer" }
+            "description": "ID dari resource yang akan dihapus",
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "User's diet plan" },
-          "404": { "description": "Diet plan not found" }
+          "200": {
+            "description": "Resource deleted successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Resource deleted successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
         }
       }
     },
-    "/activities": {
+    
+    "/users/{id}": {
       "get": {
-        "summary": "Retrieve all activities",
+        "summary": "Get a single resource",
+        "description": "Mengambil data resource berdasarkan ID.",
+        "tags": ["users"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diambil",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
-          "200": { "description": "List of all activities" },
-          "500": { "description": "Server error" }
+          "200": {
+            "description": "Data resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_users": 1,
+                  "id_user": 1,
+                  "gender": "Male",
+                  "age": 20,
+                  "weight": 70,
+                  "height": 170,
+                  "BMI": 20.5
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
         }
       },
+
       "post": {
-        "summary": "Create or update a user's activity",
+        "summary": "Create a new resource",
+        "description": "Menambahkan resource baru.",
+        "tags": ["users"],
         "requestBody": {
           "required": true,
           "content": {
@@ -192,38 +339,816 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id_user": { "type": "integer" },
-                  "activity_name": { "type": "string" },
-                  "activity_description": { "type": "string" },
-                  "activity_image": { "type": "string" },
-                  "scheduled_date": { "type": "string", "format": "date" }
-                }
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                "gender": "Male",
+                "age": 20,
+                "weight": 70,
+                "height": 170,
+                "BMI": 20.5
               }
             }
           }
         },
         "responses": {
-          "201": { "description": "Activity created/updated successfully" },
-          "400": { "description": "Invalid input" }
+          "201": {
+            "description": "Resource created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_users": 1,
+                  "id_user": 1,
+                  "message": "Survey created successfully"
+                }
+              }
+            }
+          }
+        }
+      },
+      
+      "put": {
+        "summary": "Update a resource",
+        "description": "Memperbarui data resource berdasarkan ID.",
+        "tags": ["users"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diperbarui",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                "gender": "Male",
+                "age": 20,
+                "weight": 70,
+                "height": 170,
+                "BMI": 20.5
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_users": 1,
+                  "id_user": 1,
+                  "message": "Survey updated successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
         }
       }
     },
-    "/activities/{id_user}": {
+
+    "/user_survey1/{id}": {
       "get": {
-        "summary": "Retrieve activities by User ID",
+        "summary": "Get a single resource",
+        "description": "Mengambil data resource berdasarkan ID.",
+        "tags": ["user_survey1"],
         "parameters": [
           {
-            "name": "id_user",
+            "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer" }
+            "description": "ID dari resource yang akan diambil",
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "User's activities" },
-          "404": { "description": "Activities not found" }
+          "200": {
+            "description": "Data resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_user_s1": 1,
+                  "id_users": 1,
+                  "snacking_habit": "boolean",
+                  "smoking_status": "boolean",
+                  "daily_water_intake": "option choice",
+                  "calorie_monitoring": "boolean",
+                  "physical_activity": "option choice",
+                  "screen_time": "option choice",
+                  "alcohol_consumption": "option choice",
+                  "transportation_mode": "option choice",
+                  "family_obesity_history": "boolean",
+                  "high_calorie_food": "boolean",
+                  "daily_meals": "option choice"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      },
+
+      "post": {
+        "summary": "Create a new resource",
+        "description": "Menambahkan resource baru.",
+        "tags": ["user_survey1"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                "snacking_habit": "boolean",
+                "smoking_status": "boolean",
+                "daily_water_intake": "option choice",
+                "calorie_monitoring": "boolean",
+                "physical_activity": "option choice",
+                "screen_time": "option choice",
+                "alcohol_consumption": "option choice",
+                "transportation_mode": "option choice",
+                "family_obesity_history": "boolean",
+                "high_calorie_food": "boolean",
+                "daily_meals": "option choice",
+                "user_obesity_level": "boolean"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Resource created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_user_s1": 1,
+                  "id_users": 1,
+                  "snacking_habit": "boolean",
+                  "smoking_status": "boolean",
+                  "daily_water_intake": "option choice",
+                  "calorie_monitoring": "boolean",
+                  "physical_activity": "option choice",
+                  "screen_time": "option choice",
+                  "alcohol_consumption": "option choice",
+                  "transportation_mode": "option choice",
+                  "family_obesity_history": "boolean",
+                  "high_calorie_food": "boolean",
+                  "daily_meals": "option choice",
+                  "message": "Survey 1 created successfully"
+                }
+              }
+            }
+          }
+        }
+      },
+      
+      "put": {
+        "summary": "Update a resource",
+        "description": "Memperbarui data resource berdasarkan ID.",
+        "tags": ["user_survey1"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diperbarui",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                "snacking_habit": "boolean",
+                "smoking_status": "boolean",
+                "daily_water_intake": "option choice",
+                "calorie_monitoring": "boolean",
+                "physical_activity": "option choice",
+                "screen_time": "option choice",
+                "alcohol_consumption": "option choice",
+                "transportation_mode": "option choice",
+                "family_obesity_history": "boolean",
+                "high_calorie_food": "boolean",
+                "daily_meals": "option choice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_user_s1": 1,
+                  "id_users": 1,
+                  "snacking_habit": "boolean",
+                  "smoking_status": "boolean",
+                  "daily_water_intake": "option choice",
+                  "calorie_monitoring": "boolean",
+                  "physical_activity": "option choice",
+                  "screen_time": "option choice",
+                  "alcohol_consumption": "option choice",
+                  "transportation_mode": "option choice",
+                  "family_obesity_history": "boolean",
+                  "high_calorie_food": "boolean",
+                  "daily_meals": "option choice",
+                  "message": "Survey 1 updated successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
+
+    "/user_obesity_level/{id}": {
+      "get": {
+        "summary": "Get a single resource",
+        "description": "Mengambil data resource berdasarkan ID.",
+        "tags": ["user_obesity_level"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diambil",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_userol": 1,
+                  "id_user_s1": 1,
+                  "user_obesity_level": "boolean"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      },
+      
+      "put": {
+        "summary": "Update a resource",
+        "description": "Memperbarui data resource berdasarkan ID.",
+        "tags": ["user_obesity_level"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diperbarui",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                  "user_obesity_level": "boolean"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_userol": 1,
+                  "id_user_s1": 1,
+                  "user_obesity_level": "boolean",
+                  "message": "Obesity Level updated successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
+
+    "/user_survey2/{id}": {
+      "get": {
+        "summary": "Get a single resource",
+        "description": "Mengambil data resource berdasarkan ID.",
+        "tags": ["user_survey2"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diambil",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_user_s2": 1,
+                  "id_users": 1,
+                  "id_userol": 1,
+                  "hypertension_status": "boolean",
+                  "diabetes_status": "boolean",
+                  "fitness_goal": "option choice",
+                  "fitness_type": "option choice"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      },
+
+      "post": {
+        "summary": "Create a new resource",
+        "description": "Menambahkan resource baru.",
+        "tags": ["user_survey2"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                  "id_userol": 1,
+                  "hypertension_status": "boolean",
+                  "diabetes_status": "boolean",
+                  "fitness_goal": "option choice",
+                  "fitness_type": "option choice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Resource created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_user_s2": 1,
+                  "id_users": 1,
+                  "id_userol": 1,
+                  "hypertension_status": "boolean",
+                  "diabetes_status": "boolean",
+                  "fitness_goal": "option choice",
+                  "fitness_type": "option choice",
+                  "message": "Survey 2 created successfully"
+                }
+              }
+            }
+          }
+        }
+      },
+      
+      "put": {
+        "summary": "Update a resource",
+        "description": "Memperbarui data resource berdasarkan ID.",
+        "tags": ["user_survey2"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diperbarui",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                  "hypertension_status": "boolean",
+                  "diabetes_status": "boolean",
+                  "fitness_goal": "option choice",
+                  "fitness_type": "option choice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_user_s2": 1,
+                  "id_users": 1,
+                  "id_userol": 1,
+                  "hypertension_status": "boolean",
+                  "diabetes_status": "boolean",
+                  "fitness_goal": "option choice",
+                  "fitness_type": "option choice",
+                  "message": "Survey 2 updated successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
+
+    "/A_D_recomendations/{id}": {
+      "get": {
+        "summary": "Get a single resource",
+        "description": "Mengambil data resource berdasarkan ID.",
+        "tags": ["A_D_recomendations"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diambil",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_a_d_recom": 1,
+                  "id_user_s2": 1,
+                  "id_activities": 1,
+                  "id_diets": 1,
+                  "monday_schedule": "boolean",
+                  "tuesday_schedule": "list",
+                  "wednesday_schedule": "list",
+                  "thursday_schedule": "list",
+                  "friday_schedule": "list",
+                  "saturday_schedule": "list",
+                  "sunday_schedule": "list"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      },
+
+      "post": {
+        "summary": "Create a new resource",
+        "description": "Menambahkan resource baru.",
+        "tags": ["A_D_recomendations"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                  "id_user_s2": 1,
+                  "monday_schedule": "boolean",
+                  "tuesday_schedule": "list",
+                  "wednesday_schedule": "list",
+                  "thursday_schedule": "list",
+                  "friday_schedule": "list",
+                  "saturday_schedule": "list",
+                  "sunday_schedule": "list"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Resource created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_a_d_recom": 1,
+                  "id_user_s2": 1,
+                  "id_activities": 1,
+                  "id_diets": 1,
+                  "monday_schedule": "boolean",
+                  "tuesday_schedule": "list",
+                  "wednesday_schedule": "list",
+                  "thursday_schedule": "list",
+                  "friday_schedule": "list",
+                  "saturday_schedule": "list",
+                  "sunday_schedule": "list",
+                  "message": "Activities and Diets Recomendations created successfully"
+                }
+              }
+            }
+          }
+        }
+      },
+      
+      "put": {
+        "summary": "Update a resource",
+        "description": "Memperbarui data resource berdasarkan ID.",
+        "tags": ["A_D_recomendations"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diperbarui",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                  "id_user_s2": 1,
+                  "monday_schedule": "boolean",
+                  "tuesday_schedule": "list",
+                  "wednesday_schedule": "list",
+                  "thursday_schedule": "list",
+                  "friday_schedule": "list",
+                  "saturday_schedule": "list",
+                  "sunday_schedule": "list"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_a_d_recom": 1,
+                  "id_user_s2": 1,
+                  "id_activities": 1,
+                  "id_diets": 1,
+                  "monday_schedule": "boolean",
+                  "tuesday_schedule": "list",
+                  "wednesday_schedule": "list",
+                  "thursday_schedule": "list",
+                  "friday_schedule": "list",
+                  "saturday_schedule": "list",
+                  "sunday_schedule": "list",
+                  "message": "Activities and Diets Recomendations updated successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
+    
+    "/feedback/{id}": {
+      "get": {
+        "summary": "Get a single resource",
+        "description": "Mengambil data resource berdasarkan ID.",
+        "tags": ["feedback"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diambil",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_feedback": 1,
+                  "id_user": 1,
+                  "rating": "integer",
+                  "description": "string",
+                  "created_at": "mm/dd/yy"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      },
+
+      "post": {
+        "summary": "Create a new resource",
+        "description": "Menambahkan resource baru.",
+        "tags": ["feedback"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                  "id_user": 1,
+                  "rating": "integer",
+                  "description": "string",
+                  "created_at": "mm/dd/yy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Resource created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_feedback": 1,
+                  "id_user": 1,
+                  "rating": "integer",
+                  "description": "string",
+                  "created_at": "mm/dd/yy",
+                  "message": "Feedback created successfully"
+                }
+              }
+            }
+          }
+        }
+      },
+      
+      "put": {
+        "summary": "Update a resource",
+        "description": "Memperbarui data resource berdasarkan ID.",
+        "tags": ["feedback"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID dari resource yang akan diperbarui",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["name"]
+              },
+              "example": {
+                "id_feedback": 1,
+                  "id_user": 1,
+                  "rating": "integer",
+                  "description": "string",
+                  "created_at": "mm/dd/yy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id_feedback": 1,
+                  "id_user": 1,
+                  "rating": "integer",
+                  "description": "string",
+                  "created_at": "mm/dd/yy",
+                  "message": "Feedback updated successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
         }
       }
     }
+    
   }
+
 }
