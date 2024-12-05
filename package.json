@@ -1,18 +1,26 @@
 {
-  "name": "bangkit-capstone-c242-pr593",
+  "name": "obesicheck",
   "version": "1.0.0",
-  "description": "Bangkit Capstone Team ID : C242 - PR593 <br> Here is our repository for the Bangkit 2023 Capstone project - Cloud Computing.",
-  "main": "app.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node src/app.js",
-    "start-dev": "nodemon src/app.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-dev": "nodemon ./src/server/server.js",
+    "start": "node ./src/server/server.js"
   },
   "keywords": [],
-  "author": "C242-PR593",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "@google-cloud/firestore": "^7.10.0",
+    "@tensorflow/tfjs-node": "3.21.1",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
