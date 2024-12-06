@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 exports.getRootHandler = (req, res) => {
-    res.status(200).send("Hello World");
+    res.status(200).send("Service Running");
 };
 
 // Fungsi untuk Register
@@ -134,6 +134,100 @@ exports.editUserHandler = async (req, res) => {
     }
 };
 
+exports.addUserDetailsHandler = async (req, res) => {
+    try {
+        const { gender, age, weight, height } = req.body;
+        const id_user = req.user.id_user;  // Ambil id_user dari token yang telah diverifikasi
+
+        // Validasi input
+        if (!gender || !age || !weight || !height) {
+            return res.status(400).json({ message: "Semua field wajib diisi." });
+        }
+
+        // Hitung BMI
+        const bmi = weight / (height * height); // BMI = berat badan (kg) / (tinggi badan (m) ^ 2)
+
+        // Buat ID unik untuk user detail
+        const id_users = crypto.randomUUID();
+
+        // Simpan data User ke Firestore
+        await db.collection('users').doc(id_users).set({
+            id_users,
+            id_user,        // Referensi ke id_user dari entitas user_account
+            gender,
+            age,
+            weight,
+            height,
+            bmi,
+        });
+
+        // Kembalikan response sukses
+        return res.status(201).json({ message: "Data pengguna berhasil disimpan." });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Terjadi kesalahan pada server." });
+    }
+};
+
+// Fungsi untuk mengubah data user (age, gender, height, weight)
+exports.updateUserDetailsHandler = async (req, res) => {
+    try {
+        const id_user = req.user.id_user; // Mengambil id_user dari token yang telah diverifikasi
+        const { age, gender, height, weight } = req.body;
+
+        // Validasi input
+        if (age === undefined || gender === undefined || height === undefined || weight === undefined) {
+            return res.status(400).json({ message: "Semua field (age, gender, height, weight) wajib diisi." });
+        }
+
+        // Mencari dokumen dengan id_user di koleksi users
+        const querySnapshot = await db.collection('users').where('id_user', '==', id_user).get();
+
+        if (querySnapshot.empty) {
+            return res.status(404).json({ message: "User tidak ditemukan." });
+        }
+
+        // Perbarui semua dokumen yang ditemukan
+        const userDetails = { age, gender, height, weight };
+        querySnapshot.forEach(async (doc) => {
+            await db.collection('users').doc(doc.id).update(userDetails);
+        });
+
+        return res.status(200).json({
+            message: "Data user berhasil diperbarui.",
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Terjadi kesalahan pada server." });
+    }
+};
+
+exports.getUserDetailsHandler = async (req, res) => {
+    try {
+        const id_user = req.user.id_user; // Mengambil id_user dari token yang telah diverifikasi
+
+        // Query ke koleksi 'users' untuk menemukan dokumen berdasarkan id_user
+        const querySnapshot = await db.collection('users').where('id_user', '==', id_user).get();
+
+        if (querySnapshot.empty) {
+            return res.status(404).json({ message: "User tidak ditemukan." });
+        }
+
+        // Ambil data dari dokumen yang ditemukan
+        const userData = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        return res.status(200).json({
+            message: "Data user berhasil diambil.",
+            data: userData[0], // Asumsikan hanya satu dokumen per id_user
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Terjadi kesalahan pada server." });
+    }
+};
 
 
 exports.addFeedbackHandler = async (req, res) => {
@@ -218,4 +312,3 @@ exports.getUserWithFeedbackHandler = async (req, res) => {
         return res.status(500).json({ message: "Terjadi kesalahan pada server." });
     }
 };
-
