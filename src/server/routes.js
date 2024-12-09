@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getRootHandler, registerHandler, loginHandler, editUserHandler, addUserDetailsHandler, getUserDetailsHandler, updateUserDetailsHandler, addFeedbackHandler, getUserWithFeedbackHandler } = require("./handler");
+const { getRootHandler, registerHandler, loginHandler, editUserHandler, addUserDetailsHandler, getUserDetailsHandler, updateUserDetailsHandler, addFeedbackHandler, getUserWithFeedbackHandler,predict1, predict2 } = require("./handler");
 const authenticateJWT = require('../middleware/authenticateJWT'); // Middleware untuk verifikasi JWT
 
 router.get("/", getRootHandler); //Root
@@ -17,6 +17,8 @@ router.put('/updateUserDetails', authenticateJWT, updateUserDetailsHandler); //P
 
 router.post('/feedback', authenticateJWT, addFeedbackHandler); //Post Feedback
 
+router.post('/predict1', authenticateJWT, predict1);
+router.post('/predict2', authenticateJWT, predict2);
 
 router.get('/index', authenticateJWT, (req, res) => {
     res.json({ message: `Selamat datang, ${req.user.username}` });

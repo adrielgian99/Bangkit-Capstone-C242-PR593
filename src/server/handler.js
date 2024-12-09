@@ -2,6 +2,7 @@ const { db } = require('../services/firebase');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const axios = require('axios');
 
 exports.getRootHandler = (req, res) => {
     res.status(200).send("Service Running");
@@ -134,6 +135,7 @@ exports.editUserHandler = async (req, res) => {
     }
 };
 
+
 exports.addUserDetailsHandler = async (req, res) => {
     try {
         const { gender, age, weight, height } = req.body;
@@ -145,29 +147,47 @@ exports.addUserDetailsHandler = async (req, res) => {
         }
 
         // Hitung BMI
-        const bmi = weight / (height * height); // BMI = berat badan (kg) / (tinggi badan (m) ^ 2)
+        const bmiRounded = weight / (height * height);
+        const bmi = Math.round(bmiRounded * 100) / 100; // BMI = berat badan (kg) / (tinggi badan (m) ^ 2)
 
-        // Buat ID unik untuk user detail
-        const id_users = crypto.randomUUID();
+        // Cari data pengguna berdasarkan id_user
+        const querySnapshot = await db.collection('users').where('id_user', '==', id_user).get();
 
-        // Simpan data User ke Firestore
-        await db.collection('users').doc(id_users).set({
-            id_users,
-            id_user,        // Referensi ke id_user dari entitas user_account
-            gender,
-            age,
-            weight,
-            height,
-            bmi,
-        });
+        if (!querySnapshot.empty) {
+            // Jika id_user sudah ada, ambil dokumen yang ditemukan dan update data
+            const userDoc = querySnapshot.docs[0];  // Ambil dokumen pertama yang ditemukan
+            const userDocRef = userDoc.ref;  // Ambil referensi dokumen
 
-        // Kembalikan response sukses
-        return res.status(201).json({ message: "Data pengguna berhasil disimpan." });
+            // Update data di dokumen tersebut dengan merge
+            await userDocRef.update({
+                gender,
+                age,
+                weight,
+                height,
+                bmi
+            }, { merge: true }); // Gunakan merge: true untuk menggabungkan tanpa menghapus data yang lain
+
+            return res.status(200).json({ message: "Data pengguna berhasil diperbarui." });
+        } else {
+            // Jika id_user belum ada, buat data baru
+            const id_users = crypto.randomUUID(); // ID unik untuk user detail
+            await db.collection('users').doc(id_users).set({
+                id_user,  // Menyimpan id_user sebagai document ID
+                gender,
+                age,
+                weight,
+                height,
+                bmi
+            });
+
+            return res.status(201).json({ message: "Data pengguna berhasil disimpan." });
+        }
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Terjadi kesalahan pada server." });
     }
 };
+
 
 // Fungsi untuk mengubah data user (age, gender, height, weight)
 exports.updateUserDetailsHandler = async (req, res) => {
@@ -252,27 +272,53 @@ exports.addFeedbackHandler = async (req, res) => {
         const wibDate = new Date(date.getTime() + offsetWIB);
         const created_at = wibDate.toISOString().replace('Z', '+07:00');
 
-        // Simpan feedback ke Firestore
-        await db.collection('feedback').doc(id_feedback).set({
-            id_feedback,
-            id_user,
-            rating,
-            description,
-            created_at: created_at,
-        });
+        // Cari apakah feedback untuk id_user sudah ada di koleksi feedback
+        const feedbackSnapshot = await db.collection('feedback').where('id_user', '==', id_user).get();
 
-        // Update id_feedback pada user_account
-        const userRef = db.collection('user_account').doc(id_user);
-        await userRef.update({
-            id_feedback: id_feedback,
-        });
+        if (!feedbackSnapshot.empty) {
+            // Jika sudah ada, ambil dokumen yang ditemukan
+            const existingFeedbackDoc = feedbackSnapshot.docs[0];  // Ambil dokumen pertama yang ditemukan
+            const feedbackRef = existingFeedbackDoc.ref;
 
-        return res.status(201).json({ message: "Feedback berhasil diberikan." });
+            // Update data feedback yang ada
+            await feedbackRef.update({
+                rating,
+                description,
+                created_at: created_at,
+            });
+
+            // Update id_feedback pada user_account
+            const userRef = db.collection('user_account').doc(id_user);
+            await userRef.update({
+                id_feedback: existingFeedbackDoc.id,  // Gunakan id_feedback yang sudah ada
+            });
+
+            return res.status(200).json({ message: "Feedback berhasil diperbarui." });
+        } else {
+            // Jika tidak ada, buat dokumen baru untuk feedback
+            await db.collection('feedback').doc(id_feedback).set({
+                id_feedback,
+                id_user,
+                rating,
+                description,
+                created_at: created_at,
+            });
+
+            // Update id_feedback pada user_account
+            const userRef = db.collection('user_account').doc(id_user);
+            await userRef.update({
+                id_feedback: id_feedback,
+            });
+
+            return res.status(201).json({ message: "Feedback berhasil diberikan." });
+        }
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Terjadi kesalahan pada server." });
     }
 };
+
 
 
 // Fungsi untuk mengambil data user beserta feedback-nya
@@ -310,5 +356,146 @@ exports.getUserWithFeedbackHandler = async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Terjadi kesalahan pada server." });
+    }
+};
+
+exports.predict1 = async (req, res) => {
+    try {
+        const { id_user } = req.user; // Ambil `id_user` dari token yang telah diverifikasi
+
+        // Query untuk mencari user berdasarkan id_user
+        const querySnapshot = await db.collection('users').where('id_user', '==', id_user).get();
+
+        // Periksa apakah dokumen ditemukan
+        if (querySnapshot.empty) {
+            return res.status(404).json({ message: "User tidak ditemukan." });
+        }
+
+        // Ambil data dari dokumen yang ditemukan
+        const userData = querySnapshot.docs[0].data();
+
+         // Siapkan data gabungan
+         const combinedData = {
+            Gender: userData.gender ? [userData.gender] : [],
+            Age: userData.age ? [userData.age] : [],
+            Height: userData.height ? [userData.height] : [],
+            Weight: userData.weight ? [userData.weight] : [],
+            ...req.body // Gabungkan dengan data dari request body
+        };
+
+        // Kirim data ke API Python
+        const response = await axios.post('http://127.0.0.1:5000/predict', combinedData);
+
+        // Kirimkan respon dari API Python ke client
+        return res.status(200).json(response.data);
+    } catch (error) {
+        console.error('Error:', error.message);
+
+        // Kirimkan error ke client
+        return res.status(500).json({ error: 'Terjadi kesalahan saat memproses prediksi.' });
+    }
+};
+
+exports.predict2 = async (req, res) => {
+    try {
+        // Ambil id_user dari JWT token
+        const id_user = req.user.id_user;
+
+        // Ambil data dari request body (data yang dikirimkan)
+        const data = req.body;
+
+        // Ambil data user dari koleksi users berdasarkan id_user
+        const querySnapshot = await db.collection('users').where('id_user', '==', id_user).get();
+
+        if (querySnapshot.empty) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Ambil data dari dokumen yang ditemukan
+        const userDoc = querySnapshot.docs[0];  // Karena id_user seharusnya unik
+        const userData = userDoc.data();
+
+        // Ambil nilai dari data user
+        const gender = userData.gender || null;
+        const age = userData.age || null;
+        const height = userData.height || null;
+        const weight = userData.weight || null;
+        const BMI = userData.bmi || null;
+        const user_obesity_level = userData.user_obesity_level || 'Unknown'; // Menangani jika tidak ada nilai
+
+        // Gabungkan data user dengan data body dari request
+        const combinedData = {
+            gender: gender ? [gender] : [],
+            age: age ? [age] : [],
+            height: height ? [height] : [],
+            weight: weight ? [weight] : [],
+            BMI: BMI ? [BMI] : [],
+            user_obesity_level: user_obesity_level, // Tambahkan user_obesity_level
+            ...data,  // Gabungkan dengan data yang datang dari body request
+        };
+
+        // Kirim data ke Flask server
+        const response = await axios.post('http://127.0.0.1:5000/predict', combinedData, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        // Hasil respons dari Flask
+        const result = response.data;
+
+        // Cek apakah dokumen dengan id_user sudah ada di A_D_recomendations
+        const existingDocSnapshot = await db.collection('A_D_recomendations')
+            .where('id_user', '==', id_user)
+            .get();
+
+        if (!existingDocSnapshot.empty) {
+            // Jika sudah ada, ambil ID dokumen dan update
+            const existingDoc = existingDocSnapshot.docs[0];
+            await existingDoc.ref.update({
+                monday_schedule: result.monday_schedule || null,
+                tuesday_schedule: result.tuesday_schedule || null,
+                wednesday_schedule: result.wednesday_schedule || null,
+                thursday_schedule: result.thursday_schedule || null,
+                friday_schedule: result.friday_schedule || null,
+                saturday_schedule: result.saturday_schedule || null,
+                sunday_schedule: result.sunday_schedule || null,
+                juice: result.juice || null,
+                protein_intake: result.protein_intake || null,
+                vegetables: result.vegetables || null,
+                user_obesity_level: user_obesity_level, // Update user_obesity_level
+            });
+
+            // Kirim respons sukses jika berhasil update
+            return res.status(200).json({
+                message: 'Data successfully updated in Firestore',
+                result,
+            });
+        } else {
+            // Jika tidak ada, buat dokumen baru
+            const docRef = db.collection('A_D_recomendations').doc(); // Buat dokumen baru dengan ID unik
+            await docRef.set({
+                id_a_d_recom: docRef.id,
+                id_user: id_user, // Tambahkan id_user
+                monday_schedule: result.monday_schedule || null,
+                tuesday_schedule: result.tuesday_schedule || null,
+                wednesday_schedule: result.wednesday_schedule || null,
+                thursday_schedule: result.thursday_schedule || null,
+                friday_schedule: result.friday_schedule || null,
+                saturday_schedule: result.saturday_schedule || null,
+                sunday_schedule: result.sunday_schedule || null,
+                juice: result.juice || null,
+                protein_intake: result.protein_intake || null,
+                vegetables: result.vegetables || null,
+                user_obesity_level: user_obesity_level, // Tambahkan user_obesity_level
+            });
+
+            // Kirim respons sukses jika berhasil simpan data baru
+            return res.status(200).json({
+                message: 'Data successfully saved to Firestore',
+                result,
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).json({ error: 'Failed to process request' });
     }
 };
