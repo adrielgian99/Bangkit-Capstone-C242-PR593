@@ -138,7 +138,7 @@ exports.editUserHandler = async (req, res) => {
 
 exports.addUserDetailsHandler = async (req, res) => {
     try {
-        const { gender, age, weight, height } = req.body;
+        const { gender, age, weight, height, user_obesity_level } = req.body;
         const id_user = req.user.id_user;  // Ambil id_user dari token yang telah diverifikasi
 
         // Validasi input
@@ -177,7 +177,8 @@ exports.addUserDetailsHandler = async (req, res) => {
                 age,
                 weight,
                 height,
-                bmi
+                bmi,
+                user_obesity_level: null,
             });
 
             return res.status(201).json({ message: "Data pengguna berhasil disimpan." });
@@ -361,7 +362,7 @@ exports.getUserWithFeedbackHandler = async (req, res) => {
 
 exports.predict1 = async (req, res) => {
     try {
-        const { id_user } = req.user; // Ambil `id_user` dari token yang telah diverifikasi
+        const id_user = req.user.id_user; // Ambil `id_user` dari token yang telah diverifikasi
 
         // Query untuk mencari user berdasarkan id_user
         const querySnapshot = await db.collection('users').where('id_user', '==', id_user).get();
@@ -372,10 +373,11 @@ exports.predict1 = async (req, res) => {
         }
 
         // Ambil data dari dokumen yang ditemukan
+        const userRef = querySnapshot.docs[0].ref; // Ambil referensi dokumen
         const userData = querySnapshot.docs[0].data();
 
-         // Siapkan data gabungan
-         const combinedData = {
+        // Siapkan data gabungan
+        const combinedData = {
             Gender: userData.gender ? [userData.gender] : [],
             Age: userData.age ? [userData.age] : [],
             Height: userData.height ? [userData.height] : [],
@@ -386,8 +388,24 @@ exports.predict1 = async (req, res) => {
         // Kirim data ke API Python
         const response = await axios.post('http://127.0.0.1:5000/predict', combinedData);
 
-        // Kirimkan respon dari API Python ke client
-        return res.status(200).json(response.data);
+        // Ambil hasil prediksi dari API Python (asumsi response adalah array)
+        const user_obesity_level = response.data[0]; // Ambil nilai pertama dari array response
+
+        // Cek apakah field user_obesity_level sudah ada
+        const userDoc = querySnapshot.docs[0];
+        if (!userDoc.data().hasOwnProperty('user_obesity_level')) {
+            // Jika belum ada, buat field user_obesity_level
+            await userRef.set({ user_obesity_level });
+        } else {
+            // Jika sudah ada, perbarui field user_obesity_level
+            await userRef.update({ user_obesity_level });
+        }
+
+        // Kirimkan respon sukses ke client
+        return res.status(200).json({
+            message: "Prediksi berhasil diproses dan disimpan.",
+            user_obesity_level,
+        });
     } catch (error) {
         console.error('Error:', error.message);
 
@@ -395,6 +413,7 @@ exports.predict1 = async (req, res) => {
         return res.status(500).json({ error: 'Terjadi kesalahan saat memproses prediksi.' });
     }
 };
+
 
 exports.predict2 = async (req, res) => {
     try {
