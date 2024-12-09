@@ -1,3 +1,4 @@
+import os
 import json
 from flask import Flask, request, jsonify
 import pandas as pd
@@ -7,8 +8,8 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder, OneHotEncoder
 
 app = Flask(__name__)
 
-# Memuat model Keras yang telah dilatih
-model = tf.keras.models.load_model('./model1/model.h5')
+# Menyimpan model sebagai global yang akan dimuat hanya ketika diperlukan
+model = None
 
 # Preprocessing pipeline
 scaler = StandardScaler()
@@ -34,6 +35,17 @@ onehot_encoder.fit(df[categorical_cols])
 # Melatih label encoder untuk kolom target
 label_encoder.fit(df['NObeyesdad'])
 
+# Fungsi untuk memuat model secara lazim (lazy loading)
+def load_model():
+    global model
+    if model is None:
+        model = tf.keras.models.load_model('model.h5')
+    return model
+
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"message": "Service Running"}), 200
+
 # Endpoint untuk prediksi
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -45,6 +57,9 @@ def predict():
 
     # Pra-pemrosesan data input
     X_new = preprocess_data(df_input)
+
+    # Memuat model (akan dimuat hanya saat pertama kali diperlukan)
+    model = load_model()
 
     # Melakukan prediksi
     predictions = model.predict(X_new)
@@ -77,4 +92,5 @@ def preprocess_data(df):
     return df_processed
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 8080))  # Ambil PORT dari variabel lingkungan, default ke 8080
+    app.run(debug=True, host='0.0.0.0', port=port)

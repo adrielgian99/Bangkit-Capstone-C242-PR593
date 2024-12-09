@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
@@ -7,7 +8,7 @@ from tensorflow.keras.models import load_model
 app = Flask(__name__)
 
 # Load the pre-trained model and other necessary components
-model = load_model('./model2/gym_and_diet_model.h5')
+model = load_model('model.h5')
 
 # Load the encoder and scaler if saved or create them again
 onehot_encoder = OneHotEncoder(sparse=False)
@@ -40,6 +41,9 @@ for column in categorical_columns2:
 # Fit the scaler
 scaler.fit(df[['age', 'height', 'weight', 'BMI']])
 
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"message": "Service Running"}), 200
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -85,4 +89,5 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 8080))  # Ambil PORT dari variabel lingkungan, default ke 8080
+    app.run(debug=True, host='0.0.0.0', port=port)

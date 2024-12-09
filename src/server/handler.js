@@ -386,7 +386,7 @@ exports.predict1 = async (req, res) => {
         };
 
         // Kirim data ke API Python
-        const response = await axios.post('http://127.0.0.1:5000/predict', combinedData);
+        const response = await axios.post('https://model1-api-714486790107.asia-southeast2.run.app/predict', combinedData);
 
         // Ambil hasil prediksi dari API Python (asumsi response adalah array)
         const user_obesity_level = response.data[0]; // Ambil nilai pertama dari array response
@@ -454,7 +454,7 @@ exports.predict2 = async (req, res) => {
         };
 
         // Kirim data ke Flask server
-        const response = await axios.post('http://127.0.0.1:5000/predict', combinedData, {
+        const response = await axios.post('https://model2-api-714486790107.asia-southeast2.run.app/predict', combinedData, {
             headers: { 'Content-Type': 'application/json' }
         });
 
