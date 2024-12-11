@@ -1,0 +1,75 @@
+{
+    "user_obesity_level": {
+        "Insufficient_Weight": 0,
+        "Normal_Weight": 1,
+        "Obesity_Type_I": 2,
+        "Obesity_Type_II": 3,
+        "Obesity_Type_III": 4,
+        "Overweight_Level_I": 5,
+        "Overweight_Level_II": 6
+    },
+    "vegetables": {
+        "bawang putih, jamur, paprika hijau": 0,
+        "bawang putih, jamur, paprika hijau, bengkuang": 1,
+        "bawang putih, jamur, paprika hijau, selada iceberg": 2,
+        "bawang putih, tomat roma, kemangi, paprika hijau, selada iceberg": 3,
+        "bawang putih, tomat roma, kemangi, selada iceberg": 4,
+        "brokoli, wortel, bayam, selada, bawang bombai": 5,
+        "campuran daun hijau, tomat ceri, mentimun, wortel, seledri, paprika": 6,
+        "tomat, bawang putih, sayuran hijau, brokoli, wortel, paprika": 7,
+        "wortel, ubi jalar, selada": 8
+    },
+    "protein_intake": {
+        "daging ayam, daging ikan, tahu, polong-polongan": 0,
+        "daging merah, daging unggas, daging ikan, telur, produk olahan susu, polong-polongan, kacang-kacangan": 1,
+        "daging unggas, daging ikan, tahu, polong-polongan, produk susu rendah lemak": 2,
+        "kacang tanah, kacang mete, biji wijen": 3,
+        "kacang tanah, kacang mete, biji wijen, roti lapis keju": 4,
+        "kacang tanah, kacang mete, kacang kenari": 5,
+        "keju, keju cottage, susu skim, susu rendah lemak, kacang tanah": 6,
+        "roti lapis keju, kacang tanah, kacang mete, biji labu kuning, beras merah": 7,
+        "roti lapis keju, kacang tanah, kacang mete, biji labu kuning, beras merah, selai kacang, roti lapis dengan selai": 8
+    },
+    "juice": {
+        "jus apel, jus buah bit, jus mangga": 0,
+        "jus apel, jus mangga, jus buah bit": 1,
+        "jus buah, jus lidah buaya, jus cold pressed, jus semangka": 2,
+        "jus buah, jus semangka, jus wortel, jus apel, jus mangga": 3,
+        "jus sayuran hijau, jus kale, jus bayam, jus mentimun, jus seledri, jus apel": 4
+    },
+    "monday_schedule": {
+        "jalan cepat (30 menit)": 0,
+        "jalan santai (30 menit)": 1,
+        "squat (8-12 reps x 2 set)": 2
+    },
+    "tuesday_schedule": {
+        "bersepeda (30 menit)": 0,
+        "deadlift (8-12 reps x 2 set)": 1,
+        "yoga (30 menit)": 2
+    },
+    "wednesday_schedule": {
+        "istirahat": 0
+    },
+    "thursday_schedule": {
+        "bench press (8-12 reps x 2 set)": 0,
+        "berenang (20 menit)": 1,
+        "deadlift (8-12 reps x 2 set)": 2
+    },
+    "friday_schedule": {
+        "bench press (8-12 reps x 2 set)": 0,
+        "jalan santai (30 menit)": 1,
+        "lari (20 menit)": 2,
+        "overhead press (8-12 reps x 2 set)": 3,
+        "senam (30 menit)": 4
+    },
+    "saturday_schedule": {
+        "jalan cepat (30 menit)": 0,
+        "overhead press (8-12 reps x 2 set)": 1,
+        "senam (30 menit)": 2,
+        "squat (8-12 reps x 2 set)": 3,
+        "yoga (30 menit)": 4
+    },
+    "sunday_schedule": {
+        "istirahat": 0
+    }
+}
