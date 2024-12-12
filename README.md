@@ -19,7 +19,7 @@ Here is our team Capstone Product Based repository for Bangkit 2024 Batch 2 Caps
 
 ## About this project
 
-This project is about developing an application to predict a person obesity level and provide appropriate exercise and diet recommendations based on obesity level. The application provides exercise and food recommendations that must be done every day according to the level of obesity. Our goal for this app is to raise awareness of obesity-related health risks and promote preventive actions. By providing users with insights into their health, we aim to encourage proactive steps toward reducing obesity and improving quality of life. This project aspires to be a practical solution that positively impacts public health and contributes to a healthier society by making obesity management accessible and actionable.
+This project is about developing an application to predict a person obesity level and provide appropriate activities and food recommendations based on obesity level. The application provides activites and food recommendations that must be done every day according to the level of obesity. Our goal for this app is to raise awareness of obesity-related health risks and promote preventive actions. By providing users with insights into their health, we aim to encourage proactive steps toward reducing obesity and improving quality of life. This project aspires to be a practical solution that positively impacts public health and contributes to a healthier society by making obesity management accessible and actionable.
 
 ## Repositories
 
