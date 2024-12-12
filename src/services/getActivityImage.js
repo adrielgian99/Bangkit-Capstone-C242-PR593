@@ -1,11 +1,10 @@
-// getActivityImage.js
-const { db } = require('./firestore'); // Ensure you have the Firestore instance
+const { db } = require('./firestore'); 
 
-// Function to get image URLs based on exercise names from the schedule output
+// Fungsi untuk mendapatkan URL gambar dan deskripsi berdasarkan nama latihan dari output jadwal
 const getImageUrlsFromExercises = async (exercises) => {
     const images = {};
 
-    // Loop through the exercises and fetch image URLs from Firestore
+    // Looping melalui exercises dan mengambil URL gambar dan deskripsi dari Firestore
     for (const exercise of exercises) {
         const docSnapshot = await db.collection('activity_images').doc(exercise).get();
         if (docSnapshot.exists) {
@@ -19,7 +18,7 @@ const getImageUrlsFromExercises = async (exercises) => {
         }
     }
 
-    return images; // Return the object containing image URLs
+    return images; 
 };
 
-module.exports = getImageUrlsFromExercises; // Export the function
+module.exports = getImageUrlsFromExercises; 

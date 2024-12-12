@@ -1,22 +1,21 @@
-// src/services/getFoodImages.js
 const { db } = require('./firestore');
 
-// Function to get image URLs based on food items from multiple categories
+// fungsi untuk mengambil gambar berdasarkan makanan diet
 const getFoodImages = async (inputString) => {
     const images = {};
     
-    // Split the input string into categories
+    // membagi input berdasarkan kategori
     const categories = inputString.split(';').map(category => category.trim());
 
     for (const category of categories) {
-        // Split category into name and items
+        // membagi kategori berdasarkan nama dan item
         const [categoryName, itemsString] = category.split(':').map(part => part.trim());
         const foodItems = itemsString.split(',').map(item => item.trim());
 
-        // Initialize the images object for this category
+        // inisialisasi objek untuk kategori tersebut
         images[categoryName] = {};
 
-        // Loop through the food items and fetch image URLs from Firestore
+        // Looping melalui fooditem  dan mengambil URL gambar dari Firestore
         for (const foodItem of foodItems) {
             const docSnapshot = await db.collection('food_images').doc(foodItem).get();
             if (docSnapshot.exists) {
@@ -31,7 +30,7 @@ const getFoodImages = async (inputString) => {
         }
     }
 
-    return images; // Return the object containing image URLs for all categories
+    return images; 
 };
 
-module.exports = getFoodImages; // Export the function
+module.exports = getFoodImages;

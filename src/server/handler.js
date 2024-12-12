@@ -463,12 +463,12 @@ exports.predict2 = async (req, res) => {
         // Hasil respons dari Flask
         const result = response.data;
 
-        // Access the vegetables, protein_intake, and juice from the result
+        // Mengambil data vegetables, protein_intake, dan juice dari hasil respons flask
         const vegetables = result.vegetables ? result.vegetables.split(',').map(item => item.trim()) : [];
         const proteinIntake = result.protein_intake ? result.protein_intake.split(',').map(item => item.trim()) : [];
         const juice = result.juice ? result.juice.split(',').map(item => item.trim()) : [];
 
-        // Extract exercises from the schedule output
+        // Mengambil aktivitas dari jadwal
         const exercises = [
             result.monday_schedule,
             result.tuesday_schedule,
@@ -477,15 +477,15 @@ exports.predict2 = async (req, res) => {
             result.friday_schedule,
             result.saturday_schedule,
             result.sunday_schedule,
-        ].filter(schedule => schedule && schedule !== "istirahat"); // Filter out "istirahat"
+        ].filter(schedule => schedule && schedule !== "istirahat"); // mengeluarkan "istirahat"
 
-        // Get images based on the exercise names from Firestore
+        // Memanggil fungsi untuk mengambil gambar dan deskripsi aktivitas
         const activityImages = await getImageUrlsFromExercises(exercises);
 
-        // Prepare food items for images
+        // menggabungkan data makanan untuk diambil gambar dan deskripsinya
         const foodItemsString = `vegetables: ${vegetables.join(', ')}; protein_intake: ${proteinIntake.join(', ')}; juice: ${juice.join(', ')}`;
 
-        // Get images based on the food items
+        // Memanggil fungsi untuk mengambil gambar dan deskripsi makanan
         const foodImages = await getFoodImages(foodItemsString);
 
         // Cek apakah dokumen dengan id_user sudah ada di A_D_recomendations
