@@ -1,10 +1,16 @@
 const { db } = require('../services/firestore');
+const { Storage } = require('@google-cloud/storage');
+const path = require('path');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const axios = require('axios');
 const getImageUrlsFromExercises = require('../services/getActivityImage');
-const getFoodImages = require('../services/getFoodImages');  
+const getFoodImages = require('../services/getFoodImages');
+
+// Initialize Google Cloud Storage
+const storage = new Storage();
+const bucketName = 'obesicheck-user-profile'; // Replace with your bucket name
 
 exports.getRootHandler = (req, res) => {
     res.status(200).send("Service Running");
@@ -101,7 +107,24 @@ exports.loginHandler = async (req, res) => {
 exports.editUserHandler = async (req, res) => {
     try {
         const id_user = req.user.id_user;
-        const { username, user_profile_image } = req.body;
+        const { username, password } = req.body;
+        let user_profile_image = null;
+
+        // Check if an image file is uploaded
+        if (req.file) {
+            const file = req.file; // The uploaded file
+            const fileName = `${crypto.randomUUID()}${path.extname(file.originalname)}`; // Generate a unique file name
+
+            // Upload the file to Google Cloud Storage
+            await storage.bucket(bucketName).file(fileName).save(file.buffer, {
+                metadata: {
+                    contentType: file.mimetype,
+                },
+            });
+
+            // Get the public URL of the uploaded image
+            user_profile_image = `https://storage.googleapis.com/${bucketName}/${fileName}`;
+        }
 
         // Ambil data user dari koleksi user_account berdasarkan id_user
         const userDoc = await db.collection('user_account').doc(id_user).get();
@@ -112,6 +135,18 @@ exports.editUserHandler = async (req, res) => {
 
         const currentData = userDoc.data();
 
+        // If a new password is provided, hash it and update
+        if (password) {
+            // Validate the new password (you can add more validation as needed)
+            if (password.length < 6) {
+                return res.status(400).json({ message: "Password must be at least 6 characters long." });
+            }
+
+            // Hash the new password
+            const hashedPassword = await bcrypt.hash(password, 10);
+            currentData.password = hashedPassword; // Update the password in the current data
+        }
+
         const date = new Date();
         const offsetWIB = 7 * 60 * 60 * 1000;
         const wibDate = new Date(date.getTime() + offsetWIB);
@@ -121,7 +156,8 @@ exports.editUserHandler = async (req, res) => {
         const updatedData = {
             username: username || currentData.username,
             user_profile_image: user_profile_image || currentData.user_profile_image,
-            updated_at: updated_at
+            updated_at: updated_at,
+            password: currentData.password
         };
 
         // Perbarui data di Firestore
