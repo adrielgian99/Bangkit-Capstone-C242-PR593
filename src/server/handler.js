@@ -1,8 +1,10 @@
-const { db } = require('../services/firebase');
+const { db } = require('../services/firestore');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const axios = require('axios');
+const getImageUrlsFromExercises = require('../services/getActivityImage');
+const getFoodImages = require('../services/getFoodImages');  
 
 exports.getRootHandler = (req, res) => {
     res.status(200).send("Service Running");
@@ -461,6 +463,31 @@ exports.predict2 = async (req, res) => {
         // Hasil respons dari Flask
         const result = response.data;
 
+        // Access the vegetables, protein_intake, and juice from the result
+        const vegetables = result.vegetables ? result.vegetables.split(',').map(item => item.trim()) : [];
+        const proteinIntake = result.protein_intake ? result.protein_intake.split(',').map(item => item.trim()) : [];
+        const juice = result.juice ? result.juice.split(',').map(item => item.trim()) : [];
+
+        // Extract exercises from the schedule output
+        const exercises = [
+            result.monday_schedule,
+            result.tuesday_schedule,
+            result.wednesday_schedule,
+            result.thursday_schedule,
+            result.friday_schedule,
+            result.saturday_schedule,
+            result.sunday_schedule,
+        ].filter(schedule => schedule && schedule !== "istirahat"); // Filter out "istirahat"
+
+        // Get images based on the exercise names from Firestore
+        const activityImages = await getImageUrlsFromExercises(exercises);
+
+        // Prepare food items for images
+        const foodItemsString = `vegetables: ${vegetables.join(', ')}; protein_intake: ${proteinIntake.join(', ')}; juice: ${juice.join(', ')}`;
+
+        // Get images based on the food items
+        const foodImages = await getFoodImages(foodItemsString);
+
         // Cek apakah dokumen dengan id_user sudah ada di A_D_recomendations
         const existingDocSnapshot = await db.collection('A_D_recomendations')
             .where('id_user', '==', id_user)
@@ -481,12 +508,16 @@ exports.predict2 = async (req, res) => {
                 protein_intake: result.protein_intake || null,
                 vegetables: result.vegetables || null,
                 user_obesity_level: user_obesity_level, // Update user_obesity_level
+                activityImages: activityImages,
+                foodImages: foodImages,
             });
 
             // Kirim respons sukses jika berhasil update
             return res.status(200).json({
                 message: 'Data successfully updated in Firestore',
                 result,
+                activityImages,
+                foodImages: foodImages,
             });
         } else {
             // Jika tidak ada, buat dokumen baru
@@ -505,12 +536,16 @@ exports.predict2 = async (req, res) => {
                 protein_intake: result.protein_intake || null,
                 vegetables: result.vegetables || null,
                 user_obesity_level: user_obesity_level, // Tambahkan user_obesity_level
+                activityImages: activityImages,
+                foodImages: foodImages,
             });
 
             // Kirim respons sukses jika berhasil simpan data baru
             return res.status(200).json({
                 message: 'Data successfully saved to Firestore',
                 result,
+                activityImages,
+                foodImages: foodImages,
             });
         }
     } catch (error) {
