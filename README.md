@@ -25,7 +25,7 @@ Model 2 for give recommendation food and activity using multi-label classificati
 ## DATASET
 For the dataset that we use in this capstone project is sourced from Kaggle.
 
-[Datset Model 1](https://www.kaggle.com/datasets/fatemehmehrparvar/obesity-levels)
+[Dataset Model 1](https://www.kaggle.com/datasets/fatemehmehrparvar/obesity-levels)
 
 [Dataset Model 2](https://www.kaggle.com/datasets/manohar025/gym-and-diet-recommendation)
 
