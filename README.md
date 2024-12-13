@@ -7,6 +7,13 @@ Here is our repository for the Bangkit 2023 Capstone project - Cloud Computing.
 ## DESCRIPTION
 Cloud Computing have responsible for creating and managing APIs, databases and servers. We also provide services needed by Machine Learning divisions, so that the features we have designed in this project, the data and information entered by users , such as names, images, feedback, and others can be properly used, stored and maintained.
 
+## Cloud Development Schedule
+|  Task  |     Week 1     |       Week 2        |            Week 3          |           Week 4          |
+| :----: | :------------: | :-----------------: | :------------------------: |:------------------------: |
+| Task 1 | Research services that needed for app features   | Setup Cloud Services      | Debugging Backend program on localhost  | Testing API  |
+| Task 2 | Design ERD and Cloud Architecture for App | Creating API SPEC | Deploy Backend in Cloud Run             | -             |
+| Task 3 |       -         | - |     deploy machine learning model in Clour Run     |   -       |
+
 ## TOOLS
 - JavaScript
 - Node js
