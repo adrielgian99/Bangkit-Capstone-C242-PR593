@@ -29,7 +29,7 @@ Cloud Computing have responsible for creating and managing APIs, databases and s
 The API is built using node js and express js as our API framework, we use cloud run to deploy backend, machine learning model 1 and 2, and also use Firestore Database to store user account data, prediction output, etc and utilize Google Cloud Storage to store activity and food images.
 <br>
 ## API URL
-- [OBENG API URL](https://obengapi-k7gfgy6coq-et.a.run.app)<br>
+- [OBESICHECK API URL](https://obesicheck-api-714486790107.asia-southeast2.run.app/)<br>
 
 ## Entity Relationship Diagram (ERD)
 ![Entity Relationship Diagram (ERD)](https://github.com/adrielgian99/Bangkit-Capstone-C242-PR593/blob/37c7ca53545d8624956285487c6252d10b665478/assets/Obesicheck%20ERD-Page-1.jpg)
