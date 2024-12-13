@@ -12,7 +12,7 @@ Cloud Computing have responsible for creating and managing APIs, databases and s
 | :----: | :------------: | :-----------------: | :------------------------: |:------------------------: |
 | Task 1 | Research services that needed for app features   | Setup Cloud Services      | Debugging Backend program on localhost  | Testing API  |
 | Task 2 | Design ERD and Cloud Architecture for App | Creating API SPEC | Deploy Backend in Cloud Run             | -             |
-| Task 3 |       -         | - |     deploy machine learning model in Clour Run     |   -       |
+| Task 3 |       Calculate used services price and compare it with cloud computing credit       | - |     deploy machine learning model in Clour Run     |   -       |
 
 ## TOOLS
 - JavaScript
